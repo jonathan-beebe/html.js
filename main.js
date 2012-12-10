@@ -1,15 +1,15 @@
 require.config({
   paths: {
     // Major libraries
-    jquery: 'jquery',
-    underscore: 'underscore',
+    jquery: 'lib/jquery',
+    underscore: 'lib/underscore',
     dom: 'dom'
   },
 
   shim: {
     underscore: {
       exports: '_'
-    },
+    }
   }
 });
 
@@ -33,12 +33,12 @@ require([
         , dom.h1('dom.js Test'))
       , dom.ul({'class':'breadcrumb'}
         , dom.li(
-            dom.a('Home', {href:'#'})
-          , dom.span('/', {'class':'divider'})
+            dom.a({href:'#'}, 'Home')
+          , dom.span({'class':'divider'}, '/')
         )
         , dom.li(
-            dom.a('2nd', {href:'#'})
-          , dom.span('/', {'class':'divider'})
+            dom.a({href:'#'}, '2nd')
+          , dom.span({'class':'divider'}, '/')
         )
         , dom.li({'class':'active'}, '3rd')
       )
@@ -81,28 +81,28 @@ require([
       , dom.table({
           'class': 'table table-bordered table-striped'
         }
-        , dom.colgroup({}
-          , dom.col({'class':'span1'})
-          , dom.col({'class':'span7'})
-        )
         , dom.thead({}
           , dom.tr({}
             , dom.th({}
-              , 'Table Header'
+              , 'Tag'
             )
             , dom.th({}
-              , 'Table Header'
+              , 'Description'
             )
           )
         )
         , dom.tbody({}
           , dom.tr({}
-            , dom.td({}
-              , 'td content'
-            )
-            , dom.td({}
-              , 'more and more'
-            )
+            , dom.td(dom.code(_.escape('<table>')))
+            , dom.td('Wrapping element for displaying data in a tabular format')
+          )
+          , dom.tr({}
+            , dom.td(dom.code(_.escape('<thead>')))
+            , dom.td('Container element for table header rows (' + dom.code(_.escape('<tr>')) + ') to label table columns')
+          )
+          , dom.tr({}
+            , dom.td(dom.code(_.escape('<tbody>')))
+            , dom.td('Container element for table rows (' + dom.code(_.escape('<tr>')) + ') in the body of the table')
           )
         )
       )
@@ -125,9 +125,9 @@ require([
       , 'Canada'
       , 'Mexico'
       , 'USA')
-    , dom.p(dom.button('Submit', {
+    , dom.p(dom.button({
       'class': 'btn btn-primary'
-    }))
+    }, 'Submit'))
   ));
 
   console.log('html', rendered.trim());

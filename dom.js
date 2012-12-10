@@ -12,6 +12,8 @@ define([
 
   dom.renderElement = function(data) {
 
+    console.log('renderElement', data);
+
     // Determine the closing type of this element.
 
     // open-tag closing mark for non-auto-closing elements
@@ -62,14 +64,6 @@ define([
     return '<' + data.nodeName + attrs + otc + text + ctc;
   };
 
-  dom.renderTextNode = function(nodeName, text, attr) {
-    return dom.renderElement({
-      nodeName: nodeName,
-      text: text,
-      attr: attr || {}
-    });
-  };
-
   // this method can be called in 2 ways
   // ...('div', {attr:value}, 'child node', ...)
   // ...('div', 'child node', ...) where attr is ignored
@@ -94,11 +88,13 @@ define([
 
   // create all the text-node elements
   _.each(['h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'span', 'p', 'pre', 'label', 'legend',
+      'span', 'p', 'pre', 'code', 'label', 'legend',
       'button', 'a', 'option', 'hr', 'br'], function(nodeName) {
         console.log('each', nodeName);
     dom[nodeName] = function(text, attr) {
-      return dom.renderTextNode(nodeName, text, attr);
+      var args = Array.prototype.slice.call(arguments);
+      args.unshift(nodeName);
+      return dom.renderBlockNode.apply(dom, args);
     };
   });
 

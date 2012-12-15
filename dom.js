@@ -105,7 +105,10 @@ define(['jquery', 'underscore'], function($, _) {
 
   // Create all the content elements
   _.each(['div', 'form', 'fieldset', 'ul', 'li', 'table', 'tbody', 'tr', 'td',
-    'th', 'thead', 'colgroup', 'col'
+    'th', 'thead', 'colgroup', 'col',
+    'section','article','aside', 'hgroup',
+    'header','footer','nav','figure','figcaption','time', 'meter','progress',
+    'mark','data','canvas','details','dl','dd','dt','summary','datalist'
   ], function(nodeName) {
     dom[nodeName] = function(attr) {
       var args = Array.prototype.slice.call(arguments);

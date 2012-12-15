@@ -21,6 +21,28 @@ define([
         equal(dom.button('text'), '<button>text</button>');
         equal(dom.option('text'), '<option value="text">text</option>');
 
+        equal(dom.section('text'), '<section>text</section>');
+        equal(dom.details('text'), '<details>text</details>');
+        equal(dom.dl('text'), '<dl>text</dl>');
+        equal(dom.dd('text'), '<dd>text</dd>');
+        equal(dom.dt('text'), '<dt>text</dt>');
+        equal(dom.summary('text'), '<summary>text</summary>');
+        equal(dom.datalist('text'), '<datalist>text</datalist>');
+        equal(dom.article('text'), '<article>text</article>');
+        equal(dom.aside('text'), '<aside>text</aside>');
+        equal(dom.hgroup('text'), '<hgroup>text</hgroup>');
+        equal(dom.header('text'), '<header>text</header>');
+        equal(dom.footer('text'), '<footer>text</footer>');
+        equal(dom.nav('text'), '<nav>text</nav>');
+        equal(dom.figure('text'), '<figure>text</figure>');
+        equal(dom.figcaption('text'), '<figcaption>text</figcaption>');
+        equal(dom.time('text'), '<time>text</time>');
+        equal(dom.meter('text'), '<meter>text</meter>');
+        equal(dom.progress('text'), '<progress>text</progress>');
+        equal(dom.mark('text'), '<mark>text</mark>');
+        equal(dom.data('text'), '<data>text</data>');
+        equal(dom.canvas(), '<canvas></canvas>');
+
         // some elements should never have text content, only attributes if set
         equal(dom.hr(), '<hr/>');
         equal(dom.hr('something'), '<hr/>');

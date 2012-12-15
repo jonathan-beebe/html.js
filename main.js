@@ -3,7 +3,11 @@ require.config({
     // Major libraries
     jquery: 'lib/jquery',
     underscore: 'lib/underscore',
-    dom: 'dom'
+    dom: 'dom',
+
+    // Require.js plugins
+    text: 'lib/require/text',
+    css: 'lib/require/css',
   },
 
   shim: {
@@ -22,6 +26,7 @@ require([
 ], function ($, _, dom) {
 
   console.log(dom);
+  window.dom = dom;
 
   var rendered = '';
 

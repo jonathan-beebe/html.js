@@ -3,18 +3,23 @@ define([
   'underscore'
 ], function($, _) {
 
+  // Setup our base object
+  // ---------------------
+
+  // The root object
   var dom = {};
 
-  dom.tmpl = {};
-  dom.tmpl.html = {};
+  // Current version
+  dom.VERSION = '0.1';
 
-  // Create some helper functions
+  // Helper Functions
+  // ----------------
 
-  dom.renderElement = function(data) {
-
-    console.log('renderElement', data);
+  // The main function for rendering an element
+  var renderElement = function(data) {
 
     // Determine the closing type of this element.
+    // ==========================================
 
     // open-tag closing mark for non-auto-closing elements
     var otc = '>';
@@ -54,7 +59,7 @@ define([
           text += definition;
         }
         else {
-          text += dom.renderElement(definition, {
+          text += renderElement(definition, {
             variable: 'data'
           }).trim();
         }
@@ -67,7 +72,7 @@ define([
   // this method can be called in 2 ways
   // ...('div', {attr:value}, 'child node', ...)
   // ...('div', 'child node', ...) where attr is ignored
-  dom.renderBlockNode = function(nodeName, attr) {
+  var renderNode = function(nodeName, attr) {
     var args = Array.prototype.slice.call(arguments);
     var children;
 
@@ -79,40 +84,56 @@ define([
       children = args.slice(2);
     }
 
-    return dom.renderElement({
+    return renderElement({
       nodeName: nodeName,
       attr: attr || {},
       children: children || undefined
     });
   };
 
-  // create all the text-node elements
+  // Dom Node Methods
+  // ================
+
+  // Create all the text-node elements
   _.each(['h1', 'h2', 'h3', 'h4', 'h5', 'h6',
       'span', 'p', 'pre', 'code', 'label', 'legend',
-      'button', 'a', 'option', 'hr', 'br'], function(nodeName) {
-        console.log('each', nodeName);
+      'button', 'a', 'hr', 'br'], function(nodeName) {
     dom[nodeName] = function(text, attr) {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(nodeName);
-      return dom.renderBlockNode.apply(dom, args);
+      return renderNode.apply(dom, args);
     };
   });
 
-  // create all the content elements
-  _.each(['div', 'form', 'fieldset', 'img','ul','li',
+  // Some elements should never have text content, only attributes if defined
+  _.each(['hr', 'br', 'img', 'input'], function(nodeName) {
+    dom[nodeName] = function(attr) {
+      if(!_.isObject(attr)) { attr = {}; }
+      return renderNode.apply(dom, [nodeName, attr]);
+    };
+  });
+
+  // Create all the content elements
+  _.each(['div', 'form', 'fieldset', 'ul','li',
       'table', 'tbody','tr','td', 'th', 'thead', 'colgroup','col'], function(nodeName) {
     dom[nodeName] = function(attr) {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(nodeName);
-      return dom.renderBlockNode.apply(dom, args);
+      return renderNode.apply(dom, args);
     };
   });
 
-  dom.input = function(attr) {
-    return dom.renderElement({
-      nodeName: 'input',
-      attr: attr
-    });
+  dom.option = function() {
+    var args = Array.prototype.slice.call(arguments);
+    if(args.length == 1 && _.isString(args[0])) {
+      var text = args[0];
+      args[0] = {
+        value: text
+      };
+      args.push(text);
+    }
+    args.unshift('option');
+    return renderNode.apply(dom, args);
   };
 
   dom.select = function(attr) {
@@ -122,7 +143,8 @@ define([
     // If we were given simple strings, treat them as values
     // for the option elements. Turn them into element definitions.
     _.each(children, function(item, index, array) {
-      if(_.isString(item)) {
+      // ignore non-strings or pre-renderend option elements
+      if(_.isString(item) && String(item).indexOf('</option>') === -1) {
         var def = {
           nodeName: 'option',
           attr: {
@@ -139,7 +161,7 @@ define([
     newArgs.unshift(attr);
     newArgs.unshift('select');
 
-    return dom.renderBlockNode.apply(dom, newArgs);
+    return renderNode.apply(dom, newArgs);
 
   };
 

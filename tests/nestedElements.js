@@ -1,8 +1,8 @@
 define([
   'jquery',
   'underscore',
-  'dom'
-], function ($, _, dom) {
+  'html'
+], function ($, _, html) {
 
   return {
     run: function() {
@@ -10,9 +10,9 @@ define([
       test('nested elements', function() {
 
         var div1 = function() {
-          var rendered = dom.div({id:'container'}
-            , dom.p('nested text')
-            , dom.p('more nested text')
+          var rendered = html.div({id:'container'}
+            , html.p('nested text')
+            , html.p('more nested text')
           );
 
           var result = '<div id="container"><p>nested text</p><p>more nested text</p></div>';
@@ -21,16 +21,16 @@ define([
         };
 
         var list1 = function() {
-          var rendered = dom.ul({'class':'breadcrumb'}
-            , dom.li(
-                dom.a({href:'#'}, 'Home')
-              , dom.span({'class':'divider'}, '/')
+          var rendered = html.ul({'class':'breadcrumb'}
+            , html.li(
+                html.a({href:'#'}, 'Home')
+              , html.span({'class':'divider'}, '/')
             )
-            , dom.li(
-                dom.a({href:'#'}, '2nd')
-              , dom.span({'class':'divider'}, '/')
+            , html.li(
+                html.a({href:'#'}, '2nd')
+              , html.span({'class':'divider'}, '/')
             )
-            , dom.li({'class':'active'}, '3rd')
+            , html.li({'class':'active'}, '3rd')
           );
 
           var result = '<ul class="breadcrumb">'

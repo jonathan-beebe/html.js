@@ -3,7 +3,7 @@ require.config({
     // Major libraries
     jquery: 'lib/jquery',
     underscore: 'lib/underscore',
-    dom: 'dom',
+    html: 'html',
 
     // Require.js plugins
     text: 'lib/require/text',
@@ -22,115 +22,115 @@ require.config({
 require([
   'jquery',
   'underscore',
-  'dom'
-], function ($, _, dom) {
+  'html'
+], function ($, _, html) {
 
-  console.log(dom);
-  window.dom = dom;
+  console.log(html);
+  window.html = html;
 
   var rendered = '';
 
-  rendered += dom.div({
+  rendered += html.div({
       'class': 'row'
     }
-    , dom.div({'class':'span12'}
-      , dom.div({'class':'page-header'}
-        , dom.h1('dom.js Test'))
-      , dom.ul({'class':'breadcrumb'}
-        , dom.li(
-            dom.a({href:'#'}, 'Home')
-          , dom.span({'class':'divider'}, '/')
+    , html.div({'class':'span12'}
+      , html.div({'class':'page-header'}
+        , html.h1('html.js Test'))
+      , html.ul({'class':'breadcrumb'}
+        , html.li(
+            html.a({href:'#'}, 'Home')
+          , html.span({'class':'divider'}, '/')
         )
-        , dom.li(
-            dom.a({href:'#'}, '2nd')
-          , dom.span({'class':'divider'}, '/')
+        , html.li(
+            html.a({href:'#'}, '2nd')
+          , html.span({'class':'divider'}, '/')
         )
-        , dom.li({'class':'active'}, '3rd')
+        , html.li({'class':'active'}, '3rd')
       )
     )
   );
 
-  rendered += dom.div({
+  rendered += html.div({
     'class': 'row'
   }
-    , dom.div({'class':'span12'}
-      , dom.div({
+    , html.div({'class':'span12'}
+      , html.div({
           'class': 'page-header'
         }
-        , dom.h1('Monkeys')) /* </ div.page-header > */
-      , dom.h3('More about that later')
-      , dom.p('Eat this monkey face!!!')
-      , dom.hr()
-      , dom.pre('testing pre')
-      , dom.hr()
-      , dom.ul(
-          dom.li('list content')
-        , dom.li('list content')
-        , dom.li('list content')
+        , html.h1('Monkeys')) /* </ div.page-header > */
+      , html.h3('More about that later')
+      , html.p('Eat this monkey face!!!')
+      , html.hr()
+      , html.pre('testing pre')
+      , html.hr()
+      , html.ul(
+          html.li('list content')
+        , html.li('list content')
+        , html.li('list content')
       )
-      , dom.div('inline text inside div')
-      , dom.hr()
-      , dom.img({
+      , html.div('inline text inside div')
+      , html.hr()
+      , html.img({
           src: 'http://placehold.it/220x180&text=First+thumbnail',
           'class': 'img-polaroid'
         })
     )
   );
 
-  rendered += dom.div({'class':'row'}
-    , dom.div({'class':'span12'}
-      , dom.div({
+  rendered += html.div({'class':'row'}
+    , html.div({'class':'span12'}
+      , html.div({
           'class': 'page-header'
         }
-        , dom.h1('Table')) /* </ div.page-header > */
-      , dom.table({
+        , html.h1('Table')) /* </ div.page-header > */
+      , html.table({
           'class': 'table table-bordered table-striped'
         }
-        , dom.thead({}
-          , dom.tr({}
-            , dom.th({}
+        , html.thead({}
+          , html.tr({}
+            , html.th({}
               , 'Tag'
             )
-            , dom.th({}
+            , html.th({}
               , 'Description'
             )
           )
         )
-        , dom.tbody({}
-          , dom.tr({}
-            , dom.td(dom.code(_.escape('<table>')))
-            , dom.td('Wrapping element for displaying data in a tabular format')
+        , html.tbody({}
+          , html.tr({}
+            , html.td(html.code(_.escape('<table>')))
+            , html.td('Wrapping element for displaying data in a tabular format')
           )
-          , dom.tr({}
-            , dom.td(dom.code(_.escape('<thead>')))
-            , dom.td('Container element for table header rows (' + dom.code(_.escape('<tr>')) + ') to label table columns')
+          , html.tr({}
+            , html.td(html.code(_.escape('<thead>')))
+            , html.td('Container element for table header rows (' + html.code(_.escape('<tr>')) + ') to label table columns')
           )
-          , dom.tr({}
-            , dom.td(dom.code(_.escape('<tbody>')))
-            , dom.td('Container element for table rows (' + dom.code(_.escape('<tr>')) + ') in the body of the table')
+          , html.tr({}
+            , html.td(html.code(_.escape('<tbody>')))
+            , html.td('Container element for table rows (' + html.code(_.escape('<tr>')) + ') in the body of the table')
           )
         )
       )
     )
   );
 
-  rendered += dom.form({},
-    dom.fieldset({}
-    , dom.legend('Fieldset')
-    , dom.label('Form Elem Label')
-    , dom.input({
+  rendered += html.form({},
+    html.fieldset({}
+    , html.legend('Fieldset')
+    , html.label('Form Elem Label')
+    , html.input({
         type: 'text',
         value: 'oh mama',
         name: 'text'
     })
-    , dom.label('Country')
-    , dom.select({
+    , html.label('Country')
+    , html.select({
         name: 'country'
       }
       , 'Canada'
       , 'Mexico'
       , 'USA')
-    , dom.p(dom.button({
+    , html.p(html.button({
       'class': 'btn btn-primary'
     }, 'Submit'))
   ));

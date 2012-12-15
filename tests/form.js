@@ -1,8 +1,8 @@
 define([
   'jquery',
   'underscore',
-  'dom'
-], function ($, _, dom) {
+  'html'
+], function ($, _, html) {
 
   return {
     run: function() {
@@ -10,7 +10,7 @@ define([
       test('form elements', function() {
 
         // option elements as a simple list of text arguments
-        equal(dom.select({
+        equal(html.select({
             name: 'goober',
             id:'mySelect'
           }, 'Item1', 'Item2')
@@ -19,18 +19,18 @@ define([
         + '<option value="Item2">Item2</option>'
         + '</select>');
 
-        // option elements as calls to dom.option(...)
-        equal(dom.select({
+        // option elements as calls to html.option(...)
+        equal(html.select({
             name: 'goober',
             id:'mySelect'
-          }, 'Item1', dom.option('Item2'))
+          }, 'Item1', html.option('Item2'))
         , '<select name="goober" id="mySelect">'
         + '<option value="Item1">Item1</option>'
         + '<option value="Item2">Item2</option>'
         + '</select>');
 
         // option elements as dictionary definitions
-        equal(dom.select({
+        equal(html.select({
               name: 'goober',
               id:'mySelect'
             }

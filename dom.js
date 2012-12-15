@@ -1,11 +1,7 @@
-define([
-  'jquery',
-  'underscore'
-], function($, _) {
+define(['jquery', 'underscore'], function($, _) {
 
   // Setup our base object
-  // ---------------------
-
+  // =====================
   // The root object
   var dom = {};
 
@@ -13,49 +9,29 @@ define([
   dom.VERSION = '0.1';
 
   // Helper Functions
-  // ----------------
-
+  // ================
   // The main function for rendering an element
   var renderElement = function(data) {
 
-    // Determine the closing type of this element.
-    // ==========================================
-
-    // open-tag closing mark for non-auto-closing elements
-    var otc = '>';
-    // closing tag for normal elements
-    var ctc = '</' + data.nodeName + '>';
-    if(_.contains(['input', 'br', 'hr', 'img'], data.nodeName.toLowerCase())) {
-      otc = '/>';
-      ctc = '';
-    }
-
-    // -----
-
-    // Build the attribute string
-    // var attrs = '';
-    // _.each(data.attr, function(value, key, obj) {
-    //   attrs += ' ' + key + '="' + _.escape(value) + '"';
-    // });
-
+    // Assemble the attributes
     var attrs = _.reduce(data.attr, function(attrs, value, key) {
       return attrs += ' ' + key + '="' + _.escape(value) + '"';
-    }, '');
+    },
+    '');
 
-    // -----
-
-    // Build the text for the element. This can be text, html, or
+    // Build the text for the element.
+    // This can be a string, html, or
     // more template data to be compiled into html
     var text = '';
-    if(!_.isUndefined(data.text)) {
+    if (!_.isUndefined(data.text)) {
       text = data.text;
     }
-    else if(!_.isUndefined(data.html)) {
+    else if (!_.isUndefined(data.html)) {
       text = data.html;
     }
-    else if(!_.isUndefined(data.children)) {
+    else if (!_.isUndefined(data.children)) {
       _.each(data.children, function(definition, key, obj) {
-        if(_.isString(definition)) {
+        if (_.isString(definition)) {
           text += definition;
         }
         else {
@@ -66,17 +42,30 @@ define([
       });
     }
 
-    return '<' + data.nodeName + attrs + otc + text + ctc;
+    // Determine the closing tag we should use for this element
+    var cbracket = '>';
+    // closing tag for normal elements
+    var closetag = '</' + data.nodeName + '>';
+
+    // Adjust the close tag for self-closing elements
+    if (_.contains(['input', 'br', 'hr', 'img'], data.nodeName.toLowerCase())) {
+      cbracket = '/>';
+      closetag = '';
+    }
+
+    return '<' + data.nodeName + attrs + cbracket + text + closetag;
   };
 
   // this method can be called in 2 ways
-  // ...('div', {attr:value}, 'child node', ...)
-  // ...('div', 'child node', ...) where attr is ignored
+  //
+  // `('div', {attr:value}, 'child node', ...)`
+  //
+  // `('div', 'child node', ...)` where attr is ignored
   var renderNode = function(nodeName, attr) {
     var args = Array.prototype.slice.call(arguments);
     var children;
 
-    if(_.isString(attr)) {
+    if (_.isString(attr)) {
       children = args.slice(1);
       attr = {};
     }
@@ -93,11 +82,10 @@ define([
 
   // Dom Node Methods
   // ================
-
   // Create all the text-node elements
-  _.each(['h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'span', 'p', 'pre', 'code', 'label', 'legend',
-      'button', 'a', 'hr', 'br'], function(nodeName) {
+  _.each(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'p', 'pre', 'code',
+    'label', 'legend', 'button', 'a'
+  ], function(nodeName) {
     dom[nodeName] = function(text, attr) {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(nodeName);
@@ -108,14 +96,17 @@ define([
   // Some elements should never have text content, only attributes if defined
   _.each(['hr', 'br', 'img', 'input'], function(nodeName) {
     dom[nodeName] = function(attr) {
-      if(!_.isObject(attr)) { attr = {}; }
+      if (!_.isObject(attr)) {
+        attr = {};
+      }
       return renderNode.apply(dom, [nodeName, attr]);
     };
   });
 
   // Create all the content elements
-  _.each(['div', 'form', 'fieldset', 'ul','li',
-      'table', 'tbody','tr','td', 'th', 'thead', 'colgroup','col'], function(nodeName) {
+  _.each(['div', 'form', 'fieldset', 'ul', 'li', 'table', 'tbody', 'tr', 'td',
+    'th', 'thead', 'colgroup', 'col'
+  ], function(nodeName) {
     dom[nodeName] = function(attr) {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(nodeName);
@@ -125,7 +116,7 @@ define([
 
   dom.option = function() {
     var args = Array.prototype.slice.call(arguments);
-    if(args.length == 1 && _.isString(args[0])) {
+    if (args.length == 1 && _.isString(args[0])) {
       var text = args[0];
       args[0] = {
         value: text
@@ -144,7 +135,7 @@ define([
     // for the option elements. Turn them into element definitions.
     _.each(children, function(item, index, array) {
       // ignore non-strings or pre-renderend option elements
-      if(_.isString(item) && String(item).indexOf('</option>') === -1) {
+      if (_.isString(item) && String(item).indexOf('</option>') === - 1) {
         var def = {
           nodeName: 'option',
           attr: {
@@ -168,3 +159,4 @@ define([
   return dom;
 
 });
+

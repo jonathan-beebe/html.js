@@ -5,7 +5,7 @@ require.config({
     // Major libraries
     jquery: 'lib/jquery',
     underscore: 'lib/underscore',
-    dom: 'dom',
+    html: 'html',
 
     // Require.js plugins
     text: 'lib/require/text',

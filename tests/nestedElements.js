@@ -10,10 +10,11 @@ define([
       test('nested elements', function() {
 
         var div1 = function() {
-          var rendered = html.div({id:'container'}
-            , html.p('nested text')
-            , html.p('more nested text')
-          );
+          var rendered = html().div({id:'container'})
+            .children()
+              .p('nested text')
+              .p('more nested text')
+            .toString();
 
           var result = '<div id="container"><p>nested text</p><p>more nested text</p></div>';
 
@@ -21,17 +22,20 @@ define([
         };
 
         var list1 = function() {
-          var rendered = html.ul({'class':'breadcrumb'}
-            , html.li(
-                html.a({href:'#'}, 'Home')
-              , html.span({'class':'divider'}, '/')
-            )
-            , html.li(
-                html.a({href:'#'}, '2nd')
-              , html.span({'class':'divider'}, '/')
-            )
-            , html.li({'class':'active'}, '3rd')
-          );
+          var rendered = html().ul({'class':'breadcrumb'})
+            .children()
+              .li()
+                .children()
+                .a({href:'#'}, 'Home')
+                .span({'class':'divider'}, '/')
+                .end()
+              .li()
+                .children()
+                .a({href:'#'}, '2nd')
+                .span({'class':'divider'}, '/')
+                .end()
+              .li({'class':'active'}, '3rd')
+            .toString();
 
           var result = '<ul class="breadcrumb">'
             + '<li><a href="#">Home</a>'

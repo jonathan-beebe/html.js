@@ -1,23 +1,20 @@
 define(['jquery', 'underscore'], function($, _) {
 
-  // Setup our base object
-  // =====================
-  // The root object
-  var dom = {};
-
-  // Current version
-  dom.VERSION = '0.1';
-
   // Helper Functions
   // ================
+  //
   // The main function for rendering an element
   var renderElement = function(data) {
 
-    // Assemble the attributes
+    // If we have an instance of the html object, simple return as a string.
+    if(data instanceof html) {
+      return data.toString();
+    }
+
+    // Assemble the element's attributes
     var attrs = _.reduce(data.attr, function(attrs, value, key) {
       return attrs += ' ' + key + '="' + _.escape(value) + '"';
-    },
-    '');
+    }, '');
 
     // Build the text for the element.
     // This can be a string, html, or
@@ -42,18 +39,13 @@ define(['jquery', 'underscore'], function($, _) {
       });
     }
 
-    // Determine the closing tag we should use for this element
-    var cbracket = '>';
-    // closing tag for normal elements
-    var closetag = '</' + data.nodeName + '>';
-
     // Adjust the close tag for self-closing elements
     if (_.contains(['input', 'br', 'hr', 'img'], data.nodeName.toLowerCase())) {
-      cbracket = '/>';
-      closetag = '';
+      return '<' + data.nodeName + attrs + '/>';
     }
-
-    return '<' + data.nodeName + attrs + cbracket + text + closetag;
+    else {
+      return '<' + data.nodeName + attrs + '>' + text + '</' + data.nodeName + '>';
+    }
   };
 
   // this method can be called in 2 ways
@@ -73,33 +65,91 @@ define(['jquery', 'underscore'], function($, _) {
       children = args.slice(2);
     }
 
-    return renderElement({
+    var def = {
       nodeName: nodeName,
       attr: attr || {},
-      children: children || undefined
-    });
+      children: children || [],
+      parentQueue: this.currentQueue
+    };
+
+    this.currentQueue.children.push(def);
+
+    return this;
   };
 
-  // Dom Node Methods
+  var html = function() {
+
+    if (!(this instanceof html)) {
+      return new html();
+    }
+
+    // This is the top-level queue
+    this.queue = {
+      children: []
+    };
+
+    // Track the current queue, which can be a nested element, such
+    // as a div within the top queue
+    this.currentQueue = this.queue;
+
+  };
+
+  // Current version
+  html.VERSION = '0.2';
+
+  // Render the queue to an html string.
+  html.prototype.toString = function() {
+
+    var s = '';
+    var max = this.queue.children.length;
+
+    for(var i = 0; i < max; i++) {
+        var def = this.queue.children[i];
+        s += renderElement(def);
+    }
+
+    return s;
+  };
+
+  // Place subsequent nodes into the last element's children
+  html.prototype.children = function() {
+    var len = this.currentQueue.children.length;
+    var nextQueue = this.currentQueue.children[len - 1];
+    if(nextQueue && nextQueue.children !== undefined) {
+        this.currentQueue = nextQueue;
+    }
+    return this;
+  };
+
+  // If we have been working in a child queue,
+  // move up to the parent queue
+  html.prototype.end = function() {
+    if(this.currentQueue.parentQueue !== undefined) {
+        this.currentQueue = this.currentQueue.parentQueue;
+    }
+    return this;
+  };
+
+  // html Node Methods
   // ================
   // Create all the text-node elements
   _.each(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'p', 'pre', 'code',
     'label', 'legend', 'button', 'a'
   ], function(nodeName) {
-    dom[nodeName] = function(text, attr) {
+    html.prototype[nodeName] = function(text, attr) {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(nodeName);
-      return renderNode.apply(dom, args);
+      return renderNode.apply(this, args);
     };
   });
 
   // Some elements should never have text content, only attributes if defined
   _.each(['hr', 'br', 'img', 'input'], function(nodeName) {
-    dom[nodeName] = function(attr) {
+    html.prototype[nodeName] = function(attr) {
       if (!_.isObject(attr)) {
         attr = {};
       }
-      return renderNode.apply(dom, [nodeName, attr]);
+      return renderNode.apply(this, [nodeName, attr]);
     };
   });
 
@@ -110,14 +160,14 @@ define(['jquery', 'underscore'], function($, _) {
     'header','footer','nav','figure','figcaption','time', 'meter','progress',
     'mark','data','canvas','details','dl','dd','dt','summary','datalist'
   ], function(nodeName) {
-    dom[nodeName] = function(attr) {
+    html.prototype[nodeName] = function(attr) {
       var args = Array.prototype.slice.call(arguments);
       args.unshift(nodeName);
-      return renderNode.apply(dom, args);
+      return renderNode.apply(this, args);
     };
   });
 
-  dom.option = function() {
+  html.prototype.option = function() {
     var args = Array.prototype.slice.call(arguments);
     if (args.length == 1 && _.isString(args[0])) {
       var text = args[0];
@@ -127,10 +177,10 @@ define(['jquery', 'underscore'], function($, _) {
       args.push(text);
     }
     args.unshift('option');
-    return renderNode.apply(dom, args);
+    return renderNode.apply(this, args);
   };
 
-  dom.select = function(attr) {
+  html.prototype.select = function(attr) {
     var args = Array.prototype.slice.call(arguments);
     var children = args.slice(1);
 
@@ -155,11 +205,10 @@ define(['jquery', 'underscore'], function($, _) {
     newArgs.unshift(attr);
     newArgs.unshift('select');
 
-    return renderNode.apply(dom, newArgs);
+    return renderNode.apply(this, newArgs);
 
   };
 
-  return dom;
+  return html;
 
 });
-
